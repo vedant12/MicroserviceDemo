@@ -1,5 +1,6 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
+using Newtonsoft.Json;
 using static Mango.Web.Utility.SD;
 
 namespace Mango.Web.Service
@@ -7,19 +8,32 @@ namespace Mango.Web.Service
     public class CouponService<T>(IBaseService<T> baseService, IConfiguration _configuration) : IGenericService<T> where T : class
     {
 
-        public Task<ResponseDto<T>> CreateAsync(T model)
+        public async Task<object> CreateAsync(T model)
         {
-            throw new NotImplementedException();
+            var response = await baseService.SendAsync(new RequestDto<T>
+            {
+                ApiType = ApiType.POST,
+                Data = model,
+                Url = _configuration.GetValue<string>("CouponApiUrl")
+            });
+
+            return response;
         }
 
-        public Task<ResponseDto<T>> DeleteAsync(int id)
+        public async Task<object> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await baseService.SendAsync(new RequestDto<T>
+            {
+                ApiType = ApiType.DELETE,
+                Url = _configuration.GetValue<string>("CouponApiUrl") + $"{id}"
+            });
+
+            return response;
         }
 
-        public Task<object> GetAll()
+        public async Task<object> GetAll()
         {
-            var response = baseService.SendAsync(new RequestDto<T>
+            var response = await baseService.SendAsync(new RequestDto<T>
             {
                 ApiType = ApiType.GET,
                 Url = _configuration.GetValue<string>("CouponApiUrl")
@@ -28,9 +42,9 @@ namespace Mango.Web.Service
             return response;
         }
 
-        public Task<object> GetByIdAsync(int id)
+        public async Task<object> GetByIdAsync(int id)
         {
-            var response = baseService.SendAsync(new RequestDto<T>
+            var response = await baseService.SendAsync(new RequestDto<T>
             {
                 ApiType = ApiType.GET,
                 Url = _configuration.GetValue<string>("CouponApiUrl") + $"{id}"
@@ -38,9 +52,16 @@ namespace Mango.Web.Service
 
             return response;
         }
-        public Task<ResponseDto<T>> UpdateAsync(T model)
+        public async Task<object> UpdateAsync(T model)
         {
-            throw new NotImplementedException();
+            var response = await baseService.SendAsync(new RequestDto<T>
+            {
+                ApiType = ApiType.PUT,
+                Data = model,
+                Url = _configuration.GetValue<string>("CouponApiUrl")
+            });
+
+            return response;
         }
 
     }

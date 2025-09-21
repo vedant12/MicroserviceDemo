@@ -7,8 +7,8 @@ namespace Mango.Web.Service.IService
         Task<object> GetAll();
         Task<object> GetByIdAsync(int id);
         //Task<ResponseDto<T>> GetCouponByCodeAsync(string code);
-        Task<ResponseDto<T>> UpdateAsync(T model);
-        Task<ResponseDto<T>> CreateAsync(T model);
-        Task<ResponseDto<T>> DeleteAsync(int id);
+        Task<object> UpdateAsync(T model);
+        Task<object> CreateAsync(T model);
+        Task<object> DeleteAsync(int id);
     }
 }

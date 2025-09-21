@@ -18,8 +18,15 @@ namespace Mango.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var coupons = await _coupon.GetAll();
-            var coupon = await _coupon.GetByIdAsync(2);
+            var coupon = new CouponDto
+            {
+                CouponCode = "50OFF",
+                DiscountAmount = 50,
+                MinAmount = 500,
+                CouponId = 6
+            };
+
+            var reponse = await _coupon.UpdateAsync(coupon);
             return View();
         }
 
