@@ -20,15 +20,11 @@ namespace Mango.Services.CouponAPI.Handlers
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 
-                string? entityCookie = context.Request.Cookies["Entity"];
-
-                object dto = context.Items["CurrentEntity"] ?? new object();
-
                 var response = new ResponseDto<object>
                 {
                     IsSuccess = false,
                     Message = ex.Message,
-                    Result = dto
+                    Result = null
                 };
 
                 var json = JsonSerializer.Serialize(response);
