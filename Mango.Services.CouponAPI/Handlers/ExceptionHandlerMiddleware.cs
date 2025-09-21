@@ -1,4 +1,5 @@
 ﻿using Mango.Services.CouponAPI.Dtos;
+using Microsoft.OpenApi.Writers;
 using System.Net;
 using System.Text.Json;
 
@@ -18,12 +19,16 @@ namespace Mango.Services.CouponAPI.Handlers
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                
+                string? entityCookie = context.Request.Cookies["Entity"];
+
+                object dto = context.Items["CurrentEntity"] ?? new object();
 
                 var response = new ResponseDto<object>
                 {
                     IsSuccess = false,
                     Message = ex.Message,
-                    Result = null
+                    Result = dto
                 };
 
                 var json = JsonSerializer.Serialize(response);

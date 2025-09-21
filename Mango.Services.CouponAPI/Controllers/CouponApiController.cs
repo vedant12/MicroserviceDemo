@@ -4,6 +4,7 @@ using Mango.Services.CouponAPI.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Mango.Services.CouponAPI.Controllers
 {
@@ -41,8 +42,12 @@ namespace Mango.Services.CouponAPI.Controllers
         public async Task<ActionResult<ResponseDto<CouponDto>>> GetCouponByCode(string code)
         {
             var response = new ResponseDto<CouponDto>();
+            
+            HttpContext.Items["CurrentEntity"] = new CouponDto();
 
-            var dbCoupon = await _dbContext.Coupons.FirstOrDefaultAsync(x => x.CouponCode.ToLower() ==  code.ToLower());
+            Response.Cookies.Append("Entity", nameof(CouponDto));
+
+            var dbCoupon = await _dbContext.Coupons.FirstAsync(x => x.CouponCode.ToLower() ==  code.ToLower());
 
             if (dbCoupon == null) return NotFound();
 
