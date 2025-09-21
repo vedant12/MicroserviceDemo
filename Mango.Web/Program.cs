@@ -1,6 +1,7 @@
 using Mango.Web.Models;
 using Mango.Web.Service;
 using Mango.Web.Service.IService;
+using Mango.Web.Utility;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mango.Web
@@ -11,24 +12,15 @@ namespace Mango.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddHttpContextAccessor();
-            builder.Services.AddHttpClient();
 
-            // Add this line to register IBaseService<CouponDto> in DI container:
-            builder.Services.AddScoped(typeof(IBaseService<CouponDto>), typeof(BaseService<CouponDto>));
-
-            // You can keep your existing registration for IGenericService<T>:
-            builder.Services.AddScoped(typeof(IGenericService<>), typeof(CouponService<>));
+            builder.Services.AddServiceRegistrations(builder.Configuration);
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
