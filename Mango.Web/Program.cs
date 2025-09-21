@@ -17,7 +17,6 @@ namespace Mango.Web
             builder.Services.AddHttpClient();
 
             // Add this line to register IBaseService<CouponDto> in DI container:
-            //builder.Services.AddScoped<IBaseService<CouponDto>, BaseService<CouponDto>>();
             builder.Services.AddScoped(typeof(IBaseService<CouponDto>), typeof(BaseService<CouponDto>));
 
             // You can keep your existing registration for IGenericService<T>:
