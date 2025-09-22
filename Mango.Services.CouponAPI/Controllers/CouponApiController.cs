@@ -9,7 +9,7 @@ using System.Net;
 
 namespace Mango.Services.CouponAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/coupon")]
     [ApiController]
     public class CouponApiController(AppDbContext _dbContext, IMapper mapper) : ControllerBase
     {

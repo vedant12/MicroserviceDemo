@@ -8,12 +8,12 @@ namespace Mango.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IGenericService<CouponDto> _coupon;
+        private readonly ICouponService _couponService;
 
-        public HomeController(ILogger<HomeController> logger, IGenericService<CouponDto> coupon)
+        public HomeController(ILogger<HomeController> logger, ICouponService couponService)
         {
             _logger = logger;
-            _coupon = coupon;
+            _couponService = couponService;
         }
 
         public async Task<IActionResult> Index()

@@ -6,15 +6,16 @@ namespace Mango.Web.Utility
 {
     public static class ServiceRegistrations
     {
-        public static IServiceCollection AddServiceRegistrations(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddServiceRegistrations(this IServiceCollection services, IConfiguration configuration)
         {
+            SD.CouponAPIBase = configuration["ServiceUrls:CouponAPI"];
+
             services.AddHttpContextAccessor();
-
             services.AddHttpClient();
+            services.AddHttpClient<ICouponService, CouponService>();
 
-            services.AddScoped(typeof(IBaseService<CouponDto>), typeof(BaseService<CouponDto>));
-
-            services.AddScoped(typeof(IGenericService<>), typeof(CouponService<>));
+            services.AddScoped<IBaseService, BaseService>();
+            services.AddScoped<ICouponService, CouponService>();
 
             return services;
         }

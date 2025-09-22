@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Service\IService\ICouponService.cs" />
+    <Compile Remove="Service\IService\IGenericService.cs" />
   </ItemGroup>
 
   <ItemGroup>
