@@ -85,7 +85,7 @@ namespace Mango.Services.CouponAPI.Controllers
             return Ok(response);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<ResponseDto<Coupon>>> DeleteCoupon(int id)
         {
             var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(x => x.CouponId == id);
