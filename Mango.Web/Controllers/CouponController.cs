@@ -16,8 +16,7 @@ namespace Mango.Web.Controllers
 
             if (response != null && response.IsSuccess)
             {
-                coupons = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));
-                TempData["success"] = $"Coupons fetched. Total Coupons {coupons.Count}";
+                coupons = JsonConvert.DeserializeObject<List<CouponDto>>(Convert.ToString(response.Result));                
             }
             else
             {
@@ -31,7 +30,6 @@ namespace Mango.Web.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CouponCreate(CouponDto model)
@@ -88,6 +86,56 @@ namespace Mango.Web.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> CouponUpdate(int couponId)
+        {
+            CouponDto coupon = new();
+
+            ResponseDto? response = await _couponService.GetCouponByIdAsync(couponId);
+
+            if (response != null && response.IsSuccess)
+            {
+                coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(coupon);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CouponUpdate(CouponDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                ResponseDto response = await _couponService.UpdateCouponsAsync(model);
+
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = $"Coupon {model.CouponCode} Updated";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> ViewPartial(int id)
+        {
+            CouponDto coupon = new();
+
+            var response = await _couponService.GetCouponByIdAsync(id);
+            
+            coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(response.Result));
+
+            return PartialView("_ViewCouponPartial", coupon);
         }
     }
 }
