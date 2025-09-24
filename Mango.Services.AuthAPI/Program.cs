@@ -17,6 +17,8 @@ namespace Mango.Services.AuthAPI
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthAPIConnectionString"));
             });
             
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
