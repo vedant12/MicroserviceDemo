@@ -52,9 +52,26 @@ namespace Mango.Services.AuthAPI.Service
             return "Error Encountered";
         }
 
-        public Task<LoginResponseDto> Login(LoginRequestDto model)
+        public async Task<LoginResponseDto> Login(LoginRequestDto model)
         {
-            throw new NotImplementedException();
+            var dbUser = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.UserName == model.UserName);
+
+            bool isValid = await _userManager.CheckPasswordAsync(dbUser, model.Password);
+
+            if(dbUser is null || !isValid)
+            {
+                return new LoginResponseDto() { User = null, Token = String.Empty };
+            }
+
+            UserDto userDTO = new()
+            {
+                Email = dbUser.Email,
+                Id = dbUser.Id,
+                Name = dbUser.Name,
+                PhoneNumber = dbUser.PhoneNumber
+            };
+
+            return new LoginResponseDto() { User = userDTO, Token = "" };
         }
     }
 }
