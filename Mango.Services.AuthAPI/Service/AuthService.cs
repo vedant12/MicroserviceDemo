@@ -9,7 +9,8 @@ namespace Mango.Services.AuthAPI.Service
 {
     public class AuthService(AppDbContext _context,
             UserManager<ApplicationUser> _userManager,
-            RoleManager<IdentityRole> _roleManager) : IAuthService
+            RoleManager<IdentityRole> _roleManager,
+            IJwtTokenGenerator _tokenService) : IAuthService
     {
         public async Task<string> Register(RegistrationRequestDto model)
         {
@@ -58,7 +59,7 @@ namespace Mango.Services.AuthAPI.Service
 
             bool isValid = await _userManager.CheckPasswordAsync(dbUser, model.Password);
 
-            if(dbUser is null || !isValid)
+            if (dbUser is null || !isValid)
             {
                 return new LoginResponseDto() { User = null, Token = String.Empty };
             }
@@ -71,7 +72,10 @@ namespace Mango.Services.AuthAPI.Service
                 PhoneNumber = dbUser.PhoneNumber
             };
 
-            return new LoginResponseDto() { User = userDTO, Token = "" };
+            var roles = await _userManager.GetRolesAsync(dbUser);
+            var token = _tokenService.GenerateToken(dbUser, roles);
+
+            return new LoginResponseDto() { User = userDTO, Token = token };
         }
     }
 }

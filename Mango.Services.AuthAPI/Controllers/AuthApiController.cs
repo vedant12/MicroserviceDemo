@@ -30,6 +30,7 @@ namespace Mango.Services.AuthAPI.Controllers
         public async Task<IActionResult> Login(LoginRequestDto model)
         {
             var loginResponse = await _authService.Login(model);
+
             if (loginResponse.User is null)
             {
                 _responseDto.IsSuccess = false;
