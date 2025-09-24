@@ -11,7 +11,7 @@ namespace Mango.Services.AuthAPI.Service
             UserManager<ApplicationUser> _userManager,
             RoleManager<IdentityRole> _roleManager) : IAuthService
     {
-        public async Task<UserDto> Register(RegistrationRequestDto model)
+        public async Task<string> Register(RegistrationRequestDto model)
         {
             ApplicationUser user = new()
             {
@@ -38,14 +38,18 @@ namespace Mango.Services.AuthAPI.Service
                         Id = dbUser.Id
                     };
 
-                    return userDto;
+                    return "";
+                }
+                else
+                {
+                    return result.Errors.FirstOrDefault().Description;
                 }
             }
             catch (Exception ex)
             {
             }
 
-            return new UserDto();
+            return "Error Encountered";
         }
 
         public Task<LoginResponseDto> Login(LoginRequestDto model)
