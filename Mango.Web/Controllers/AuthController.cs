@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Mango.Web.Controllers
 {
-    public class AuthController(IAuthService _authService, ITokenProvider _tokenProvider) : Controller
+    public class AuthController(IAuthService _authService) : Controller
     {
         public IActionResult Login()
         {
@@ -63,14 +63,14 @@ namespace Mango.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationRequestDto model)
         {
-            ResponseDto result = await _authService.RegisterAsync(model) ?? throw new Exception("Invalid Data");
+            ResponseDto result = await _authService.RegisterAsync(model);
             ResponseDto assingRole;
 
             if (result != null && result.IsSuccess)
             {
                 if (string.IsNullOrEmpty(model.Role)) model.Role = SD.RoleCustomer;
 
-                assingRole = await _authService.AssignRoleAsync(model) ?? throw new Exception("Invalid Data");
+                assingRole = await _authService.AssignRoleAsync(model);
 
                 if (assingRole != null && assingRole.IsSuccess)
                 {

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="Service\IService\IGenericService.cs" />
+    <Compile Remove="Service\IService\ITokenProvider.cs" />
   </ItemGroup>
 
   <ItemGroup>
