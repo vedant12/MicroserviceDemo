@@ -8,14 +8,18 @@ namespace Mango.Web.Utility
     {
         public static IServiceCollection AddServiceRegistrations(this IServiceCollection services, IConfiguration configuration)
         {
-            SD.CouponAPIBase = configuration["ServiceUrls:CouponAPI"];
+            SD.CouponAPIBase = configuration["ServiceUrls:CouponAPI"]!;
+            SD.AuthAPIBase = configuration["ServiceUrls:AuthAPI"]!;
 
             services.AddHttpContextAccessor();
+
             services.AddHttpClient();
             services.AddHttpClient<ICouponService, CouponService>();
+            services.AddHttpClient<IAuthService, AuthService>();
 
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
