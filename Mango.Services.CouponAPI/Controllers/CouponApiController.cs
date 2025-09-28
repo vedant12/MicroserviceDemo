@@ -54,6 +54,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Coupon>>> CreateCoupon(CouponDto model)
         {
             var response = new ResponseDto<Coupon>();
@@ -70,6 +71,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Coupon>>> UpdateCoupon(CouponDto model)
         {
             var response = new ResponseDto<Coupon>();
@@ -77,7 +79,7 @@ namespace Mango.Services.CouponAPI.Controllers
             var coupon = mapper.Map<Coupon>(model);
 
             _dbContext.Update(coupon);
-            
+
             await _dbContext.SaveChangesAsync();
 
             response.Result = coupon;
@@ -86,6 +88,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Coupon>>> DeleteCoupon(int id)
         {
             var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(x => x.CouponId == id);
