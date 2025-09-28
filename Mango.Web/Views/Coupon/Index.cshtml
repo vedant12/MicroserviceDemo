@@ -15,9 +15,12 @@
 		<div class="row pb-3">
 			<div class="col-6">
 			</div>
-			<div class="col-6 text-end">
-				<a asp-action="CouponCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
-			</div>
+			@if (User?.Claims?.Where(x => x.Type.ToLower() == "role").Select(c => c.Value).FirstOrDefault().ToLower() == "admin")
+			{
+				<div class="col-6 text-end">
+					<a asp-action="CouponCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
+				</div>
+			}
 		</div>
 		<table class="table table-bordered table-hover">
 			<thead>
