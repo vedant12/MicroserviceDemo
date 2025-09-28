@@ -1,6 +1,7 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service;
 using Mango.Web.Service.IService;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Mango.Web.Utility
@@ -18,6 +19,7 @@ namespace Mango.Web.Utility
             services.AddHttpClient<ICouponService, CouponService>();
             services.AddHttpClient<IAuthService, AuthService>();
 
+            services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICouponService, CouponService>();
             services.AddScoped<IAuthService, AuthService>();

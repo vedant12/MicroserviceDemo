@@ -1,5 +1,4 @@
 ﻿using Mango.Services.CouponAPI.Dtos;
-using Microsoft.OpenApi.Writers;
 using System.Net;
 using System.Text.Json;
 
