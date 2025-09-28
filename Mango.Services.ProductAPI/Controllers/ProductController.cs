@@ -41,8 +41,8 @@ namespace Mango.Services.ProductAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GetByCategoryName/{code}")]
-        public async Task<ActionResult<ResponseDto<ProductDto>>> GetProductByCode(string categoryName)
+        [HttpGet("GetProductByCategoryName/{code}")]
+        public async Task<ActionResult<ResponseDto<ProductDto>>> GetProductByCategoryName(string categoryName)
         {
             var response = new ResponseDto<ProductDto>();
 

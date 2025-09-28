@@ -12,17 +12,20 @@ namespace Mango.Web.Utility
         {
             SD.CouponAPIBase = configuration["ServiceUrls:CouponAPI"]!;
             SD.AuthAPIBase = configuration["ServiceUrls:AuthAPI"]!;
+            SD.ProductAPIBase = configuration["ServiceUrls:ProductAPI"]!;
 
             services.AddHttpContextAccessor();
 
             services.AddHttpClient();
             services.AddHttpClient<ICouponService, CouponService>();
             services.AddHttpClient<IAuthService, AuthService>();
+            services.AddHttpClient<IProductService, ProductService>();
 
             services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICouponService, CouponService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITokenProvider, TokenProvider>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>

@@ -1,0 +1,103 @@
+﻿@{
+	ViewData["Title"] = "Coupon Index";
+}
+@model IEnumerable<ProductDto>
+
+
+<div class="card shadow border-0 mt-4">
+	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h1 class="text-white">Products List</h1>
+			</div>
+		</div>
+	</div>
+	<div class="card-body p-4">
+		<div class="row pb-3">
+			<div class="col-6">
+			</div>
+			@if (User?.Claims?.Where(x => x.Type.ToLower() == "role").Select(c => c.Value).FirstOrDefault().ToLower() == "admin")
+			{
+				<div class="col-6 text-end">
+					<a asp-action="ProductCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Product</a>
+				</div>
+			}
+		</div>
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>
+						Name
+					</th>
+					<th>
+						Category Name
+					</th>
+					<th>
+						Price
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@item.Name
+						</td>
+						<td>
+							@item.CategoryName
+						</td>
+						<td>
+							$@item.Price
+						</td>
+						<td>
+							<a asp-action="ProductDelete" asp-route-productId="@item.ProductId" title="Delete" class="btn btn-danger">
+								<i class="bi bi-trash-fill"></i>
+							</a>
+							<a asp-action="ProductUpdate" asp-route-productId="@item.ProductId" title="Edit" class="btn btn-warning">
+								<i class="bi bi-pencil-square"></i>
+							</a>
+							<a title="View" data-url="@Url.Action("ViewPartial", "Product", new { id = item.ProductId })" class="btn btn-white" onclick="openModal(this)">
+								<i class="bi bi-eye-fill"></i>
+							</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+	</div>
+
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function openModal(element) {
+		var url = $(element).data("url");
+
+		// Load the partial view into the modal body
+		$("#exampleModal .modal-body").load(url, function () {
+			// Show the modal after content is loaded
+			var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+			modal.show();
+		});
+	}
+</script>
