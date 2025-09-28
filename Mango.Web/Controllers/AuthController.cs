@@ -121,5 +121,12 @@ namespace Mango.Web.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
