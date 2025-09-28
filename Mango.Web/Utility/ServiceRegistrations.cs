@@ -20,6 +20,7 @@ namespace Mango.Web.Utility
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<ICouponService, CouponService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenProvider, TokenProvider>();
 
             return services;
         }

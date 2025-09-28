@@ -1,13 +1,17 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Mango.Web.Utility;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Mango.Web.Controllers
 {
-    public class AuthController(IAuthService _authService) : Controller
+    public class AuthController(IAuthService _authService, ITokenProvider _tokenProvider) : Controller
     {
         public IActionResult Login()
         {
@@ -23,23 +27,53 @@ namespace Mango.Web.Controllers
 
                 if (responseDto != null && responseDto.IsSuccess)
                 {
-                    //LoginResponseDto loginResponseDto =
-                    //    JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(responseDto.Result));
+                    LoginResponseDto loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(responseDto.Result))!;
 
-                    //await SignInUser(loginResponseDto);
-                    //_tokenProvider.SetToken(loginResponseDto.Token);
-                    //return RedirectToAction("Index", "Home");
+                    await SignInUser(loginResponseDto);
+                    
+                    _tokenProvider.SetToken(loginResponseDto.Token);
+                    
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    TempData["error"] = responseDto.Message;
+                    ModelState.AddModelError("CustomError", responseDto?.Message);
                 }
             }
             else
             {
-
+                ModelState.AddModelError("CustomError", "Invalid Model Data");
             }
             return View(model);
+        }
+
+        private async Task SignInUser(LoginResponseDto? loginResponseDto)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var jwtToken = tokenHandler.ReadJwtToken(loginResponseDto.Token);
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email,
+                jwtToken.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)!.Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub,
+                jwtToken.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub)!.Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name,
+                jwtToken.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name)!.Value));
+
+            identity.AddClaim(new Claim(ClaimTypes.Name,
+                jwtToken.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)!.Value));
+
+            if (jwtToken.Claims.FirstOrDefault(x => x.Type == "role") != null)
+            {
+                identity.AddClaim(new Claim(ClaimTypes.Role,
+                    jwtToken.Claims.FirstOrDefault(u => u.Type == "role")!.Value));
+            }
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         public IActionResult Register()
