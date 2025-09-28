@@ -3,11 +3,7 @@ using Mango.Services.CouponAPI.Automapper;
 using Mango.Services.CouponAPI.Data;
 using Mango.Services.CouponAPI.Extensions;
 using Mango.Services.CouponAPI.Handlers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 namespace Mango.Services.CouponAPI
 {

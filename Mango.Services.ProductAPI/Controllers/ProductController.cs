@@ -12,6 +12,7 @@ namespace Mango.Services.ProductAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController(AppDbContext _dbContext, IMapper mapper) : ControllerBase
     {
         [HttpGet]
@@ -40,7 +41,7 @@ namespace Mango.Services.ProductAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GetByCode/{code}")]
+        [HttpGet("GetByCategoryName/{code}")]
         public async Task<ActionResult<ResponseDto<ProductDto>>> GetProductByCode(string categoryName)
         {
             var response = new ResponseDto<ProductDto>();
@@ -55,6 +56,7 @@ namespace Mango.Services.ProductAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Product>>> CreateProduct(ProductDto model)
         {
             var response = new ResponseDto<Product>();
@@ -71,6 +73,7 @@ namespace Mango.Services.ProductAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Product>>> UpdateProduct(ProductDto model)
         {
             var response = new ResponseDto<Product>();
@@ -87,6 +90,7 @@ namespace Mango.Services.ProductAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<ResponseDto<Product>>> DeleteProduct(int id)
         {
             var dbProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.ProductId == id);

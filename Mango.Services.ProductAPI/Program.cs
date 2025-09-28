@@ -1,12 +1,14 @@
 
+using Mango.Services.ProductAPI.Automapper;
 using Mango.Services.ProductAPI.Data;
+using Mango.Services.ProductAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ProductAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +16,16 @@ namespace Mango.Services.ProductAPI
 
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen();
+            builder.AddSwaggerConfiguration();
+
+            builder.AddAppAuthentication();
 
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("ProductApiConnectionString"));
             });
+
+            builder.Services.AddAutoMapper(typeof(MapperConfig).Assembly);
 
             var app = builder.Build();
 
@@ -35,6 +41,19 @@ namespace Mango.Services.ProductAPI
             app.UseAuthorization();
 
             app.MapControllers();
+
+            using var scope = app.Services.CreateScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+
+            if (pendingMigrations.Any())
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+
+            app.Run();
 
             app.Run();
         }
