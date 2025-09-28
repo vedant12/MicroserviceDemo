@@ -1,6 +1,7 @@
 
 using Mango.Services.CouponAPI.Automapper;
 using Mango.Services.CouponAPI.Data;
+using Mango.Services.CouponAPI.Extensions;
 using Mango.Services.CouponAPI.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -25,60 +26,12 @@ namespace Mango.Services.CouponAPI
             builder.Services.AddAutoMapper(typeof(MapperConfig).Assembly);
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen(opt =>
-            {
-                opt.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+            builder.AddSwaggerConfiguration();
 
-                });
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference= new OpenApiReference
-                            {
-                                Type=ReferenceType.SecurityScheme,
-                                Id=JwtBearerDefaults.AuthenticationScheme
-                            }
-                        }, new string[]{}
-                    }
-                });
-            });
-
-            var secret = builder.Configuration["ApiSettings:Secret"];
-            var issuer = builder.Configuration["ApiSettings:Issuer"];
-            var audience = builder.Configuration["ApiSettings:Audience"];
-
-            var key = Encoding.ASCII.GetBytes(secret);
-
-            builder.Services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(p =>
-            {
-                p.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = audience,
-                    ValidIssuer = issuer,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-            });
-
-            builder.Services.AddAuthorization();
+            builder.AddAppAuthentication();
 
             var app = builder.Build();
 
