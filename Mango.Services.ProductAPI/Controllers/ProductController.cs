@@ -12,7 +12,6 @@ namespace Mango.Services.ProductAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductController(AppDbContext _dbContext, IMapper mapper) : ControllerBase
     {
         [HttpGet]
