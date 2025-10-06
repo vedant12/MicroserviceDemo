@@ -8,5 +8,6 @@
     <Project Path="Mango.Services.AuthAPI/Mango.Services.AuthAPI.csproj" />
     <Project Path="Mango.Services.CouponAPI/Mango.Services.CouponAPI.csproj" />
     <Project Path="Mango.Services.ProductAPI/Mango.Services.ProductAPI.csproj" Id="2bd97d7c-814a-4177-958f-8c18d9b91454" />
+    <Project Path="Mango.Services.ShoppingCartAPI/Mango.Services.ShoppingCartAPI.csproj" Id="c852cdf1-6e26-467a-8b46-051dda78fa89" />
   </Folder>
 </Solution>
