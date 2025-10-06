@@ -1,25 +1,62 @@
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+using Mango.Services.ShoppingCartAPI.Automapper;
+using Mango.Services.ShoppingCartAPI.Data;
+using Mango.Services.ShoppingCartAPI.Extensions;
+using Microsoft.EntityFrameworkCore;
+using System;
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+namespace Mango.Services.ShoppingCartAPI
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllers();
+
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.AddSwaggerConfiguration();
+
+            builder.AddAppAuthentication();
+
+            builder.Services.AddDbContext<AppDbContext>(opt =>
+            {
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("ProductApiConnectionString"));
+            });
+
+            builder.Services.AddAutoMapper(typeof(MapperConfig).Assembly);
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            using var scope = app.Services.CreateScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+
+            if (pendingMigrations.Any())
+            {
+                await dbContext.Database.MigrateAsync();
+            }
+
+            app.Run();
+
+            app.Run();
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
