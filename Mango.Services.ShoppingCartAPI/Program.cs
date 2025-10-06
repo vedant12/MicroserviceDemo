@@ -3,7 +3,6 @@ using Mango.Services.ShoppingCartAPI.Automapper;
 using Mango.Services.ShoppingCartAPI.Data;
 using Mango.Services.ShoppingCartAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Mango.Services.ShoppingCartAPI
 {
@@ -23,7 +22,7 @@ namespace Mango.Services.ShoppingCartAPI
 
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
-                opt.UseSqlServer(builder.Configuration.GetConnectionString("ProductApiConnectionString"));
+                opt.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingCartApiConnectionString"));
             });
 
             builder.Services.AddAutoMapper(typeof(MapperConfig).Assembly);
