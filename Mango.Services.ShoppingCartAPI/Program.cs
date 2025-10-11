@@ -1,7 +1,8 @@
-
 using Mango.Services.ShoppingCartAPI.Automapper;
 using Mango.Services.ShoppingCartAPI.Data;
 using Mango.Services.ShoppingCartAPI.Extensions;
+using Mango.Services.ShoppingCartAPI.Service;
+using Mango.Services.ShoppingCartAPI.Service.IService;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.ShoppingCartAPI
@@ -20,10 +21,17 @@ namespace Mango.Services.ShoppingCartAPI
 
             builder.AddAppAuthentication();
 
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICouponService, CouponService>();
+
             builder.Services.AddDbContext<AppDbContext>(opt =>
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingCartApiConnectionString"));
             });
+
+            builder.Services.AddHttpClient("Product", x => x.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+            
+            builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
 
             builder.Services.AddAutoMapper(typeof(MapperConfig).Assembly);
 
